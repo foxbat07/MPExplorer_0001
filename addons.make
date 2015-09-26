@@ -1,0 +1,4 @@
+ofxGui
+ofxXmlSettings
+ofxExif
+ofxSelfOrganizingMap
