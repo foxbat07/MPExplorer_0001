@@ -59,6 +59,16 @@ class ofApp : public ofBaseApp{
         double maxInArray(double passedArray[]);
     
         void drawFullImage(int selectedImageNumber);
+        void updateGridFbo ();
+        void updateSOM ();
+        void initializeSOM ();
+    
+        void clearSelections();
+    
+        void updateSelections( int selectedImageNumber );
+    
+    
+    
     
     
     
@@ -70,34 +80,13 @@ class ofApp : public ofBaseApp{
         //image cataloguing stuff
         ofImage imageThumbs[numberOfTestImages];
         ofImage selectedFullImage;
-    
-        string imagePaths[numberOfTestImages];
-        string selectedFullImagePath;
-        string exifDataString[numberOfTestImages];
-    
-        string exifDataString1[numberOfTestImages];
-        string exifDataString2[numberOfTestImages];
-        string exifDataString3[numberOfTestImages];
-    
-        double exifDataInt1[numberOfTestImages];
-        double exifDataInt2[numberOfTestImages];
-        double exifDataInt3[numberOfTestImages];
 
-    
+    string selectedFullImagePath;
     
     
         int selectedImageNumber = 0;
         int gridSize = sqrt(numberOfTestImages);
             
-    
-        //pathnames
-        string folderName = "mirflickr";
-        string imageBaseName = "im";
-        string imageExtension = ".jpg";
-    
-        string exifFolder = "meta/exif";
-        string exifBaseName = "exif";
-        string exifExtention = ".txt";
     
     
         // check for mouse
@@ -117,6 +106,18 @@ class ofApp : public ofBaseApp{
         
         vector<ImageDataClass> GridImages;
     
+        vector<int> pickedImagevector;
+    
+    
+    
+    string folderName = "mirflickr";
+    string imageBaseName = "im";
+    string imageExtension = ".jpg";
+    
+    string exifFolder = "meta/exif";
+    string exifBaseName = "exif";
+    string exifExtention = ".txt";
+
         
     
     
