@@ -44,6 +44,8 @@ class ImageDataClass
     
     bool isImageSelected;
     bool isImagePersist;
+    bool isImageInRange;
+        
         
     
     bool imageWidth;
@@ -52,7 +54,8 @@ class ImageDataClass
 
     void initialize(int i);
     //void update();
-
+        
+    
     
         
          

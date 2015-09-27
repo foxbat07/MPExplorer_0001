@@ -7,7 +7,6 @@
 void ofApp::setup(){
     
     // setting OF diplay parameters
-    //ofSetLogLevel( OF_LOG_VERBOSE );
     ofSetVerticalSync( true );
     ofSetFrameRate(60);
     ofEnableBlendMode(OF_BLENDMODE_ALPHA);
@@ -15,15 +14,23 @@ void ofApp::setup(){
 
     // switching to new scheme of things
     
-    for (int i = 0; i < numberOfTestImages; i++)
+    for (int i = 0, j = 0 ; j  < numberOfTestImages; i++)
          {
              
              ImageDataClass tempClass;
              tempClass.initialize(i);
+             if ( tempClass.dAperture != 0 && tempClass.dISOSpeed != 0 && tempClass.dFocalLength > 10 && tempClass.dShutterSpeed != 0 )
+             {
+                 tempClass.imageNumber = j ;
+                 GridImages.push_back(tempClass);
+                 j++;
+                
+             }
              
-             GridImages.push_back(tempClass);
-             
+                 
+             imageStack =  i ; 
          }
+    
     
     
     
@@ -72,7 +79,8 @@ void ofApp::update(){
 void ofApp::draw(){
 
     
-    ofBackground(0);
+    ofBackground(64);
+    
     
     /*
     ofDrawBitmapString("Source image", 30, 20);
@@ -163,8 +171,11 @@ void ofApp::mouseReleased(int x, int y, int button){
         }
     
     updateGridFbo();
-    
-    
+    if ( pickedImagevector.size() >= convergingMinimum )
+    {
+        theConvergingFunction();
+        converging = true;
+    }
     
     
 
@@ -184,6 +195,7 @@ void ofApp::gotMessage(ofMessage msg){
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
 
 }
+
 
 
 
@@ -225,19 +237,16 @@ void ofApp::drawFullImage(int selectedImageNumber)
 {
     //create selected image
     ofPushMatrix();
-    selectedFullImagePath = ofToString(folderName) + "/" + ofToString(imageBaseName) + ofToString(selectedImageNumber + 1 ) + ofToString(imageExtension);
+    // selectedFullImagePath = ofToString(folderName) + "/" + ofToString(imageBaseName) + ofToString( GridImages[ selectedImageNumber + 1 ].imageNumber ) + ofToString(imageExtension);        // fix original image issue
+    selectedFullImagePath = GridImages[selectedImageNumber].imagePath;
+    
     selectedFullImage.loadImage(selectedFullImagePath);
     selectedFullImage.draw(fullImageX , yMargin);
     ofPopMatrix();
     
-    
-    ofDrawBitmapString("selected image number: " + ofToString(selectedImageNumber), fullImageX, metaBeginY);
-    ofDrawBitmapString("image Width  " + ofToString(selectedFullImage.width), fullImageX, metaBeginY + metaLineHeight);
-    ofDrawBitmapString("selected image number: " + ofToString(selectedFullImage.height), fullImageX, metaBeginY + 2 * metaLineHeight );
-    ofDrawBitmapString("framerate: " + ofToString( int(ofGetFrameRate()) ), fullImageX, metaBeginY + 3 * metaLineHeight);
-    ofDrawBitmapString("ISO: " + ofToString( GridImages[selectedImageNumber].dISOSpeed ) + "    Exposure: " + ofToString( GridImages[selectedImageNumber].dShutterSpeed ) + "    Aperture: " + ofToString( GridImages[selectedImageNumber].dAperture ) , fullImageX, metaBeginY + 4 * metaLineHeight);
-    
-     ofDrawBitmapString("image selections: " + ofToString( pickedImagevector ), fullImageX, metaBeginY + 5 * metaLineHeight);
+    drawCurrentStateParameters();
+                                                                                                  
+       
     
 
 }
@@ -246,7 +255,7 @@ void ofApp::drawFullImage(int selectedImageNumber)
 void ofApp::updateGridFbo()
 {
     fbo.begin();
-    for (int i = 0 ; i < numberOfTestImages; i++)
+    for (int i = 0 ; i < GridImages.size() ; i++)
     {
         //imageThumbs[i].draw( i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight );
         GridImages[i].thumbImage.draw(i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight);
@@ -261,6 +270,16 @@ void ofApp::updateGridFbo()
             ofSetColor( ofColor::white );
             
         }
+        
+        if( GridImages[i].isImagePersist == false  )
+        {
+            ofSetColor( ofColor::red,100);
+
+            ofRect( i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight, imageThumbWidth, imageThumbHeight );
+            ofSetColor( ofColor::white );
+            
+        }
+        
         
     }
     fbo.end();
@@ -386,9 +405,6 @@ void ofApp::updateSelections( int selectedImageNumber )
             {
                 pickedImagevector.erase(pickedImagevector.begin() + i );
                 
-                
-                
-                
             }
         }
         
@@ -396,4 +412,272 @@ void ofApp::updateSelections( int selectedImageNumber )
     }
 }
 
+
+void ofApp::theConvergingFunction()
+        {
+            converging = false;
+
+            dMinFocalLength = GridImages[pickedImagevector[0]].dFocalLength;
+            dMaxFocalLength = GridImages[pickedImagevector[0]].dFocalLength;
+            dMinISOSpeed = GridImages[pickedImagevector[0]].dISOSpeed;
+            dMaxISOSpeed = GridImages[pickedImagevector[0]].dISOSpeed;
+            dMinShutterSpeed = GridImages[pickedImagevector[0]].dShutterSpeed;
+            dMaxShutterSpeed = GridImages[pickedImagevector[0]].dShutterSpeed;
+            dMinAperture = GridImages[pickedImagevector[0]].dAperture;
+            dMaxAperture = GridImages[pickedImagevector[0]].dAperture;
+
+
+
+            
+            
+            for ( int i  = 0 ; i < pickedImagevector.size() ; i++ )
+                {
+                 
+                 // get each image check if it is lesser or greater than the current selection
+                 //multiplicative factor? lol
+                 //fancy statistics charts of current images?
+                 
+                 //to find min and max within our game
+                    
+                    
+                  //focal length
+                  if( dMinFocalLength > GridImages[pickedImagevector[i]].dFocalLength)
+                  {
+                      dMinFocalLength = GridImages[pickedImagevector[i]].dFocalLength;
+                  }
+                    
+                    
+                  if( dMaxFocalLength < GridImages[pickedImagevector[i]].dFocalLength)
+                    {
+                        dMaxFocalLength = GridImages[pickedImagevector[i]].dFocalLength;
+                    }
+                   cout<<"FL :  "<<dMinFocalLength<<"   "<< dMaxFocalLength <<endl ;
+                    /////////////
+                    
+                    //ISO speed
+                    if( dMinISOSpeed > GridImages[pickedImagevector[i]].dISOSpeed)
+                    {
+                        dMinISOSpeed = GridImages[pickedImagevector[i]].dISOSpeed;
+                    }
+                    
+                    
+                    if( dMaxISOSpeed < GridImages[pickedImagevector[i]].dISOSpeed)
+                    {
+                        dMaxISOSpeed = GridImages[pickedImagevector[i]].dISOSpeed;
+                    }
+                    cout<<"ISO:  "<<dMinISOSpeed<<"   "<< dMaxISOSpeed <<endl ;
+                    //////////////
+                    
+                    
+                    //Shutter Speed
+                    if( dMinShutterSpeed > GridImages[pickedImagevector[i]].dShutterSpeed)
+                    {
+                        dMinShutterSpeed = GridImages[pickedImagevector[i]].dShutterSpeed;
+                    }
+                    
+                    
+                    if( dMaxShutterSpeed < GridImages[pickedImagevector[i]].dShutterSpeed)
+                    {
+                        dMaxShutterSpeed = GridImages[pickedImagevector[i]].dShutterSpeed;
+                    }
+                    cout<<"Exposure:  "<<dMinShutterSpeed<<"   "<< dMaxShutterSpeed <<endl ;
+                    //////////////
+                    
+                    
+                    //Aperture
+                    if( dMinAperture > GridImages[pickedImagevector[i]].dAperture)
+                    {
+                        dMinAperture = GridImages[pickedImagevector[i]].dAperture;
+                    }
+                    
+                    
+                    if( dMaxAperture < GridImages[pickedImagevector[i]].dAperture)
+                    {
+                        dMaxAperture = GridImages[pickedImagevector[i]].dAperture;
+                    }
+                    cout<<"Aperture:  "<<dMinAperture<<"   "<< dMaxAperture <<endl ;
+                    //////////////
+                    cout<<"=========================" <<endl ;
+                    
+                    
+                }
+            
+            // now for persistance, select the ones that are in range, red the rest
+            
+            
+            for ( int i = 0 ; i< GridImages.size() ; i ++ )
+                {
+                 if ( GridImages[i].dFocalLength >= dMinFocalLength &&  GridImages[i].dFocalLength <= dMaxFocalLength )
+                     {
+                      if ( GridImages[i].dShutterSpeed >= dMinShutterSpeed &&  GridImages[i].dShutterSpeed <= dMaxShutterSpeed )
+                         {
+                            if ( GridImages[i].dAperture >= dMinAperture &&  GridImages[i].dAperture <= dMaxAperture )
+                            {
+                             if ( GridImages[i].dISOSpeed >= dMinISOSpeed &&  GridImages[i].dISOSpeed <= dMaxISOSpeed )
+                                 {
+                                  // if it lies within all four ranges it stays
+                                     GridImages[i].isImagePersist = true;
+                                     GridImages[i].isImageInRange = true;
+                                     
+                                 }
+                                
+                            }
+                         }
+                             
+                     }
+                    
+                else
+                    {
+                    GridImages[i].isImagePersist = false;
+                    GridImages[i].isImageInRange = false;
+
+                    }
+                    
+                    
+                }
+
+            theRemovingFunction();
+            //injectNewPhotos();
+            // replace right then and there?
+            
+        }
+
+
+void ofApp::theRemovingFunction()
+        {
+            // removing all imagepersisted
+            // check if criterion matched
+            // if it does, replace
+            // have an option to flush out and expand
+            
+            // evolving 3D vis with 2D scatter plots etc
+            imagesRemoved.clear();
+            for ( int i = 0 ; i< GridImages.size() ; i ++ )
+            {
+                if ( GridImages[i].isImagePersist == false )
+                    {
+                     //GridImages.erase(GridImages.begin() + i );
+                     imagesRemoved.push_back(i);
+                     //check if new image is any good
+                    bool newImageFound = false;
+                        
+                    while( newImageFound == false )
+                        {
+                         ImageDataClass tempImage;
+                         tempImage.initialize(++imageStack);
+                            
+                         bool isValid =  checkIfImageValid(tempImage);
+                        
+                         if (isValid)
+                            {
+                                GridImages[i] = tempImage;   //swap it for the new one, although its position will be wierd
+                                GridImages[i].imageNumber = i; // resetting i. else it be in wierd places
+                                newImageFound = true;
+                                break;
+                                
+                            }
+                          else
+                          {
+                              newImageFound = false;
+                              continue;
+                              
+                          }
+                        
+                        }
+                        
+                     // image should be swapped at this point
+                        
+                     // add function to set number and position
+                        
+                    }
+            
+            }
+            
+         // remove photos
+            
+        }
+
+
+void ofApp::injectNewPhotos()
+{
+    for ( int i = 0 ,  j = 0 ; i < imagesRemoved.size() ; i++, j++ )
+    {
+        //loop through next set of images
+        
+        //create new grid
+        ImageDataClass testImageData;
+        testImageData.initialize(imageStack + j );
+        
+        GridImages.push_back(testImageData);
+        
+        
+    }
+    
+    
+    updateGridFbo();
+    
+}
+
+
+
+bool  ofApp::checkIfImageValid ( ImageDataClass tempImage)
+{
+    
+    if ( tempImage.dFocalLength >= dMinFocalLength &&  tempImage.dFocalLength <= dMaxFocalLength )
+    {
+        if ( tempImage.dShutterSpeed >= dMinShutterSpeed &&  tempImage.dShutterSpeed <= dMaxShutterSpeed )
+        {
+            if ( tempImage.dAperture >= dMinAperture &&  tempImage.dAperture <= dMaxAperture )
+            {
+                if ( tempImage.dISOSpeed >= dMinISOSpeed &&  tempImage.dISOSpeed <= dMaxISOSpeed )
+                {
+                    // if it lies within all four ranges it stays
+                    tempImage.isImagePersist = true;
+                    tempImage.isImageInRange = true;
+                    return true;
+                    
+                }
+                
+            }
+        }
+        
+    }
+    
+    else
+    {
+        tempImage.isImagePersist = false;
+        tempImage.isImageInRange = false;
+        return false;
+        
+        
+    }
+    
+    
+    
+    
+}
+                                                                                                  
+                                                                                                  
+                                                                                                  
+                                                                                                  
+void ofApp::drawCurrentStateParameters()
+  {
+      ofDrawBitmapString("selected image number: " + ofToString(selectedImageNumber), fullImageX, metaBeginY);
+      ofDrawBitmapString("image Width  " + ofToString(selectedFullImage.width), fullImageX, metaBeginY + metaLineHeight);
+      ofDrawBitmapString("selected image number: " + ofToString(selectedFullImage.height), fullImageX, metaBeginY + 2 * metaLineHeight );
+      ofDrawBitmapString("framerate: " + ofToString( int(ofGetFrameRate()) ), fullImageX, metaBeginY + 3 * metaLineHeight);
+      ofDrawBitmapString("ISO: " + ofToString( GridImages[selectedImageNumber].dISOSpeed ) + "    Exposure: " + ofToString( GridImages[selectedImageNumber].dShutterSpeed ) + "    Aperture: " + ofToString( GridImages[selectedImageNumber].dAperture)  + "    Focal length: " + ofToString( GridImages[selectedImageNumber].dFocalLength)  , fullImageX, metaBeginY + 4 * metaLineHeight);
+      
+      ofDrawBitmapString("image selections: " + ofToString( pickedImagevector ), fullImageX, metaBeginY + 5 * metaLineHeight);
+      ofDrawBitmapString("image selection size: " + ofToString( pickedImagevector.size() ), fullImageX, metaBeginY + 6 * metaLineHeight);
+      
+      ofDrawBitmapString("converging: " + ofToString( converging ), fullImageX, metaBeginY + 7 * metaLineHeight);
+      
+      ofDrawBitmapString("Stack Number : " + ofToString( imageStack  ), fullImageX, metaBeginY + 8 * metaLineHeight);
+      ofDrawBitmapString("Images Deleted: " + ofToString( imagesRemoved.size()  ), fullImageX, metaBeginY + 9 * metaLineHeight);
+      
+      
+  }
+                                                                                                  
+                                                                                                
 

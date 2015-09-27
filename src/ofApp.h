@@ -9,11 +9,11 @@
 
 // for a grid of 600 * 600 p , change accordingly
 
-const int numberOfTestImages = 400;
+const int numberOfTestImages = 100;
 
 
-const int imageThumbWidth = 40;
-const int imageThumbHeight = 40;
+const int imageThumbWidth = 100;
+const int imageThumbHeight = 100;
 
 
 //const int numberOfTestImages = 400;
@@ -31,10 +31,7 @@ const int yMargin = 50;
 const int fullImageX = 1200;
 const int metaBeginY = 750;
 const int metaLineHeight = 25;
-
-
-
-
+const int convergingMinimum = 6;
 
 
 class ofApp : public ofBaseApp{
@@ -67,6 +64,19 @@ class ofApp : public ofBaseApp{
     
         void updateSelections( int selectedImageNumber );
     
+        void theConvergingFunction();
+    
+        void theRemovingFunction();
+    
+        void getNewImages();
+        void injectNewPhotos();
+    
+        bool checkIfImageValid ( ImageDataClass tempImage);
+    
+        void drawCurrentStateParameters();
+    
+    
+    
     
     
     
@@ -81,13 +91,13 @@ class ofApp : public ofBaseApp{
         ofImage imageThumbs[numberOfTestImages];
         ofImage selectedFullImage;
 
-    string selectedFullImagePath;
+        string selectedFullImagePath;
     
     
         int selectedImageNumber = 0;
         int gridSize = sqrt(numberOfTestImages);
-            
     
+        bool converging = false;
     
         // check for mouse
         bool mouseInsideGrid = false;
@@ -99,25 +109,41 @@ class ofApp : public ofBaseApp{
     
         //SOM
         //ofxSelfOrganizingMap som;
-
     
-    //    ImageDataClass GridImages[numberOfTestImages];
-    
+    //   ImageDataClass GridImages[numberOfTestImages];
         
         vector<ImageDataClass> GridImages;
-    
         vector<int> pickedImagevector;
-    
-    
-    
-    string folderName = "mirflickr";
-    string imageBaseName = "im";
-    string imageExtension = ".jpg";
-    
-    string exifFolder = "meta/exif";
-    string exifBaseName = "exif";
-    string exifExtention = ".txt";
+        vector<int> imagesRemoved;
 
+        string folderName = "mirflickr";
+        string imageBaseName = "im";
+        string imageExtension = ".jpg";
+        
+        string exifFolder = "meta/exif";
+        string exifBaseName = "exif";
+        string exifExtention = ".txt";
+    
+    
+        double dMinFocalLength;
+        double dMinISOSpeed;
+        double dMinShutterSpeed;
+        double dMinAperture;
+        
+        double dMaxFocalLength;
+        double dMaxISOSpeed;
+        double dMaxShutterSpeed;
+        double dMaxAperture;
+        // make sure they are doubles
+    
+        int imageStack = numberOfTestImages;
+    
+    
+
+    
+    
+    
+        
         
     
     

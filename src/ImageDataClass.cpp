@@ -20,10 +20,10 @@ string exifExtention = ".txt";
 
 
 
-const int imageThumbWidth = 40;
-const int imageThumbHeight = 40;
+const int imageThumbWidth = 100;
+const int imageThumbHeight = 100;
 
-const int gridSize = 20;
+const int gridSize = 10;
 
 // currently 800
 
@@ -77,6 +77,10 @@ void ImageDataClass::initialize(int i)
         ofBuffer buffer = file.readToBuffer();
         //cout << buffer.getText()<<endl ;
         
+        int eCounter = 0 ;
+        int ACounter = 0 ;
+        
+        
         
         while(!buffer.isLastLine() )
         {
@@ -85,18 +89,28 @@ void ImageDataClass::initialize(int i)
             if ( exifLine == "-Exposure" )
                 this->sShutterSpeed.append(buffer.getNextLine() + "  ");
             
-            if ( exifLine == "-Aperture" )
+            if ( exifLine == "-Aperture" && ACounter == 0 )
+            {
                 this->sAperture.append(buffer.getNextLine() + "  ");
+                ACounter++;
+            }
+            
             
             if ( exifLine == "-ISO Speed" )
             {
                 this->sISOSpeed.append(buffer.getNextLine() + "  ");
-                break;
+                
             }
             
+            if ( exifLine == "-Focal Length" )
+            {
+                this->sFocalLength.append(buffer.getNextLine() + "  ");
+                break;
+
+            }
             
         }
-        
+                
         
         // cleaning up to integers for SOM
         //for Exposure
@@ -112,6 +126,13 @@ void ImageDataClass::initialize(int i)
         
         // for ISO speed
         this->dISOSpeed = ofToDouble ( this->sISOSpeed ) ;
+        
+        // focal length split
+        vector<string> FocalLengthSplit;
+        FocalLengthSplit =  ofSplitString( this->sFocalLength , " ");
+        this->dFocalLength = ofToDouble ( FocalLengthSplit[0] ) ;
+
+        
         
         //cout << exifDataString1[i] << exifDataString2[i] << exifDataString3[i] <<endl;
         //cout << i <<" + "<< this->dISOSpeed<<" + "<< this->dAperture <<" + " << this->dShutterSpeed << endl;
@@ -132,7 +153,8 @@ void ImageDataClass::initialize(int i)
     
     
     this->isImageSelected = false;
-    this->isImagePersist = false ;
+    this->isImagePersist = true  ;
+    this->isImageInRange = true ;
 
     }
 
