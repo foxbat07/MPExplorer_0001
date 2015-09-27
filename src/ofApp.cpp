@@ -23,98 +23,11 @@ void ofApp::setup(){
              
              GridImages.push_back(tempClass);
              
-             /*
-             imagePaths[i] = ofToString(folderName) + "/" + ofToString(imageBaseName) + ofToString(i+1) + ofToString(imageExtension);
-             
-             ofImage tempImage;
-             tempImage.clear();
-             tempImage.loadImage(imagePaths[i]);
-             
-             int aspectDifference = tempImage.width - tempImage.height;
-             
-             if ( aspectDifference == 0 )
-             {
-                 // dont crop it is square
-             }
-             else if ( aspectDifference > 0 )
-             {
-                 // it is landscape x moves
-                 tempImage.crop(aspectDifference/2 , 0 , tempImage.height, tempImage.height);   // height is less, stick with the height;
-             }
-             else if ( aspectDifference < 0 )
-             {
-                 // it is portrait y moves
-                 tempImage.crop(0 , -aspectDifference/2 , tempImage.width, tempImage.width);   // width is less, stick with width
-                 
-             }
-             
-             //tempImage.update();
-             tempImage.resize(imageThumbWidth, imageThumbHeight);
-             //tempImage.update();
-             
-             imageThumbs[i].clone(tempImage);
-             
-             
-             //importing the exif data in the same pass
-             
-             string exifFilePath = ofToString(folderName) +"/"+ ofToString(exifFolder) + "/" + ofToString(exifBaseName) + ofToString(i+1) + ofToString(exifExtention);
-  
-             ofFile file(exifFilePath, ofFile::ReadOnly);
-             if( file.isFile())
-               {
-                   ofBuffer buffer = file.readToBuffer();
-                   //cout << buffer.getText()<<endl ;
-                   
-                   
-                   while(!buffer.isLastLine() )
-                        {
-                         string exifLine = buffer.getNextLine();
-                         
-                         if ( exifLine == "-Exposure" )
-                             exifDataString1[i].append(buffer.getNextLine() + "  ");
-                         if ( exifLine == "-Aperture" )
-                             exifDataString2[i].append(buffer.getNextLine() + "  ");
-                         if ( exifLine == "-ISO Speed" )
-                         {
-                             exifDataString3[i].append(buffer.getNextLine() + "  ");
-                             break;
-                         }
-                            
-                        }
-   
-               }
-               // cleaning up to integers for SOM
-             //for Exposure
-             vector<string> ExposureSplit;
-             ExposureSplit =  ofSplitString(exifDataString1[i] , " ");
-             exifDataInt1[i] = ofToDouble ( ExposureSplit[0] ) ;
-             
-             //for Aperture
-             vector<string> ApertureSplit;
-             ApertureSplit =  ofSplitString(exifDataString2[i] , "f/");
-             exifDataInt2[i] = ofToDouble ( ApertureSplit[ApertureSplit.size()-1] );
-             
-             
-             // for ISO speed
-             exifDataInt3[i] = ofToDouble ( exifDataString3[i] ) ;
-             
-             //cout << exifDataString1[i] << exifDataString2[i] << exifDataString3[i] <<endl;
-             cout << i <<" + "<< exifDataInt1[i]<<" + "<< exifDataInt2[i] <<" + " <<exifDataInt3[i] << endl;
-             cout << i <<" + "<< exifDataString1[i]<<" + "<< exifDataString2[i] <<" + "<<exifDataString3[i] << endl;
-
-             */
-            
-             
-             
          }
-    //find min and max
     
-//    //to find min
-//    cout<< std::min_element( exifDataInt1[0], exifDataInt1[numberOfTestImages-1] );
-//    //to find max
-//    cout<< std::max_element( exifDataInt1[0], exifDataInt1[numberOfTestImages-1] );
-
-
+    
+    
+    //find min and max for SOM
 //    
 //    double minInArray1 =  minInArray( exifDataInt1 );
 //    cout<<minInArray1<<endl;
@@ -145,16 +58,17 @@ void ofApp::setup(){
         {
         //imageThumbs[i].draw( i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight );
         GridImages[i].thumbImage.draw(i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight);
+        
+        
+        if( GridImages[selectedImageNumber].isImageSelected )
+          {
+              ofSetColor( ofColor::blue );
+              
+              ofRect(i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight, imageThumbWidth, imageThumbHeight);
+       
+          }
+           
             
-//        ofSetColor(ofColor::green);
-//            
-//        ofDrawBitmapString(exifDataString1[i] , i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight + 20 );
-//            
-//        ofDrawBitmapString(exifDataString2[i]  , i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight + 40 );
-//            
-//        ofDrawBitmapString(exifDataString3[i] , i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight + 60 );
-//            
-//        ofSetColor(ofColor::white );
         }
     fbo.end();
     
@@ -241,24 +155,11 @@ void ofApp::update(){
 //    fbo2.end();
     
     
-    
-    
-    
     //update FBO
+    //ofTranslate(xMargin, yMargin);
     
     
-    
-    
-
-    
-    
-    
-    
-    
-
-    
-    
-    
+ 
 
 }
 
@@ -274,30 +175,17 @@ void ofApp::draw(){
     sourceImg.draw(20, 30, 480, 480);
     somImg.draw(520, 30, 480, 480);
     
-    // draw thumbnails
-    ofDrawBitmapString("Click one of the thumbnails or drag another image file into the application to change the source", 120, 540);
-    for (int i = 0; i < 5; i++)
-        sourceImgThumbs[i].draw(25 + 195*i, 550, 185, 185);
-     */
+    */
     
+     
     //ofDrawBitmapString("Self-organizing map: Iteration " + ofToString(som.getCurrentIteration()) + "/" + ofToString(som.getNumIterations()), 530, 20);
     
     
     fbo.draw(xMargin, yMargin);
     //fbo2.draw(xMargin + fullImageX- 200, yMargin);
-
-    //create selected image
-//    ofPushMatrix();
-//    selectedFullImagePath = ofToString(folderName) + "/" + ofToString(imageBaseName) + ofToString(selectedImageNumber + 1 ) + ofToString(imageExtension);
-//    selectedFullImage.loadImage(selectedFullImagePath);
-//    selectedFullImage.draw(fullImageX , yMargin);
-//    ofPopMatrix();
-//    
-//    ofDrawBitmapString("selected image number: " + ofToString(selectedImageNumber), fullImageX, metaBeginY);
-//    ofDrawBitmapString("image Width  " + ofToString(selectedFullImage.width), fullImageX, metaBeginY + metaLineHeight);
-//    ofDrawBitmapString("selected image number: " + ofToString(selectedFullImage.height), fullImageX, metaBeginY + 2 * metaLineHeight );
-//    ofDrawBitmapString("framerate: " + ofToString( int(ofGetFrameRate()) ), fullImageX, metaBeginY + 3 * metaLineHeight);
-//    
+    drawFullImage(selectedImageNumber);
+    
+    
     
 }
 
@@ -314,33 +202,21 @@ void ofApp::keyReleased(int key){
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
     
-    
-    
-    
+
     // selected image sholuld be a function of x & y
     
     
     if ( x > xMargin && y > yMargin &&  x <  ( xMargin + gridSize * imageThumbWidth ) &&  y < ( yMargin + gridSize * imageThumbHeight ) )
-    {
-        mouseInsideGrid = true;
-        
-        int xLevel = ( x - xMargin ) / imageThumbWidth;
-        int yLevel = ( y - yMargin ) / imageThumbHeight;
-        
-        
-        selectedImageNumber = yLevel  + xLevel * gridSize;
-        
-//        if (selectedImageNumber < 0 || selectedImageNumber > 100)
-//            selectedImageNumber = 5;
-        
-        
-        
-    }
+        {
+            mouseInsideGrid = true;
+            int xLevel = ( x - xMargin ) / imageThumbWidth;
+            int yLevel = ( y - yMargin ) / imageThumbHeight;
+            selectedImageNumber = yLevel  + xLevel * gridSize;
+        }
     else
-    {
-        mouseInsideGrid = false;
-    }
-    
+        {
+            mouseInsideGrid = false;
+        }
     
 
 }
@@ -353,11 +229,53 @@ void ofApp::mouseDragged(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
     
+    
 
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
+    
+    //mouse clicks
+    
+    if ( x > xMargin && y > yMargin &&  x <  ( xMargin + gridSize * imageThumbWidth ) &&  y < ( yMargin + gridSize * imageThumbHeight ) )
+        {
+            mouseInsideGrid = true;
+            
+            int xLevel = ( x - xMargin ) / imageThumbWidth;
+            int yLevel = ( y - yMargin ) / imageThumbHeight;
+            
+            
+            selectedImageNumber = yLevel  + xLevel * gridSize;
+            GridImages[selectedImageNumber].isImageSelected = true;
+            
+        }
+    
+    
+    fbo.begin();
+    for (int i = 0 ; i < numberOfTestImages; i++)
+    {
+        //imageThumbs[i].draw( i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight );
+        GridImages[i].thumbImage.draw(i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight);
+        
+        
+        if( GridImages[selectedImageNumber].isImageSelected )
+        {
+            ofSetColor( ofColor::green  ,200);
+            ofNoFill();
+            ofRect( i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight, imageThumbWidth, imageThumbHeight);
+            ofSetColor( ofColor::white );
+
+        }
+        
+        
+    }
+    fbo.end();
+
+    
+    
+    
+    
 
 }
 
@@ -413,6 +331,22 @@ double ofApp::maxInArray(double passedArray[])
 
 
 
+void ofApp::drawFullImage(int selectedImageNumber)
+{
+    //create selected image
+    ofPushMatrix();
+    selectedFullImagePath = ofToString(folderName) + "/" + ofToString(imageBaseName) + ofToString(selectedImageNumber + 1 ) + ofToString(imageExtension);
+    selectedFullImage.loadImage(selectedFullImagePath);
+    selectedFullImage.draw(fullImageX , yMargin);
+    ofPopMatrix();
+    
+    
+    ofDrawBitmapString("selected image number: " + ofToString(selectedImageNumber), fullImageX, metaBeginY);
+    ofDrawBitmapString("image Width  " + ofToString(selectedFullImage.width), fullImageX, metaBeginY + metaLineHeight);
+    ofDrawBitmapString("selected image number: " + ofToString(selectedFullImage.height), fullImageX, metaBeginY + 2 * metaLineHeight );
+    ofDrawBitmapString("framerate: " + ofToString( int(ofGetFrameRate()) ), fullImageX, metaBeginY + 3 * metaLineHeight);
+    ofDrawBitmapString("ISO: " + ofToString( GridImages[selectedImageNumber].dISOSpeed ) + "    Exposure: " + ofToString( GridImages[selectedImageNumber].dShutterSpeed ) + "    Aperture: " + ofToString( GridImages[selectedImageNumber].dAperture ) , fullImageX, metaBeginY + 4 * metaLineHeight);
 
+}
 
 

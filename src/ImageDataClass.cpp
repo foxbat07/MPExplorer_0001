@@ -114,8 +114,7 @@ void ImageDataClass::initialize(int i)
         this->dISOSpeed = ofToDouble ( this->sISOSpeed ) ;
         
         //cout << exifDataString1[i] << exifDataString2[i] << exifDataString3[i] <<endl;
-        cout << i <<" + "<< this->dISOSpeed<<" + "<< this->dAperture <<" + " << this->dShutterSpeed << endl;
-        //cout << i <<" + "<< exifDataString1[i]<<" + "<< exifDataString2[i] <<" + "<<exifDataString3[i] << endl;
+        //cout << i <<" + "<< this->dISOSpeed<<" + "<< this->dAperture <<" + " << this->dShutterSpeed << endl;
         
         
     
@@ -128,12 +127,12 @@ void ImageDataClass::initialize(int i)
     this->imageNumber = i ; // keeping track of initial numbers
 
     
-    
-    int imageXposition = i/gridSize * imageThumbWidth;
-    int imageYposition = i%gridSize * imageThumbHeight;
+    int imageXposition = i%gridSize * imageThumbHeight;
+    int imageYposition = i/gridSize * imageThumbWidth;
     
     
     this->isImageSelected = false;
-    this->isImagePersist = true;
+    this->isImagePersist = false ;
 
     }
+

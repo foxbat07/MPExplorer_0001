@@ -58,7 +58,7 @@ class ofApp : public ofBaseApp{
         double minInArray(double passedArray[]);
         double maxInArray(double passedArray[]);
     
-    
+        void drawFullImage(int selectedImageNumber);
     
     
     
@@ -109,7 +109,7 @@ class ofApp : public ofBaseApp{
         ofFbo fbo2;
     
         //SOM
-        ofxSelfOrganizingMap som;
+        //ofxSelfOrganizingMap som;
 
     
     //    ImageDataClass GridImages[numberOfTestImages];

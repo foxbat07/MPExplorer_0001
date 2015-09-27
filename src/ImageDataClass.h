@@ -53,10 +53,7 @@ class ImageDataClass
     void initialize(int i);
     //void update();
 
+    
         
-        
-
-        
-        
-       
+         
     };
