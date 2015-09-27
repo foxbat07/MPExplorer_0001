@@ -17,37 +17,46 @@
 
 
 
-class ImageDataClass{
-                    public:
-                    ofImage fullImage;
-                    ofImage thumbImage;
-                    EXIFInfo exifData;
+class ImageDataClass
+    {
+    public:
+    ofImage fullImage;
+    ofImage thumbImage;
+    EXIFInfo exifData;
+
+    string imagePath;
+    int imageNumber;
+
+    string sFocalLength;
+    string sISOSpeed;
+    string sShutterSpeed;
+    string sAperture;
+
+    string sExifDataString;
+
+    double dFocalLength;
+    double dISOSpeed;
+    double dShutterSpeed;
+    double dAperture;
+
+    int imageXposition;
+    int imageYposition;
     
-                    string imagePath;
-                    int imageNumber;
+    bool isImageSelected;
+    bool isImagePersist;
+        
     
-                    string sFocalLength;
-                    string sISOSpeed;
-                    string sShutterSpeed;
-                    string sAperture;
-    
-                    string sExifDataString;
-    
-                    double dFocalLength;
-                    double dISOSpeed;
-                    double dShutterSpeed;
-                    double dAperture;
-    
-                    int imageXposition;
-                    int imageYposition;
-                    
-                    bool isImageSelected;
-                    bool isImageGood;
-                    bool isImageBad;
-                    
-                    bool imageWidth;
-                    bool imageheight;
-    
-    
-    
-};
+    bool imageWidth;
+    bool imageheight;
+
+
+    void initialize(int i);
+    //void update();
+
+        
+        
+
+        
+        
+       
+    };

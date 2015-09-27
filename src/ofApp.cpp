@@ -1,6 +1,8 @@
 #include "ofApp.h"
 #include <algorithm>
 
+
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     
@@ -11,10 +13,17 @@ void ofApp::setup(){
     ofEnableBlendMode(OF_BLENDMODE_ALPHA);
     ofEnableSmoothing();
 
+    // switching to new scheme of things
     
-     for (int i = 0; i < numberOfTestImages; i++)
+    for (int i = 0; i < numberOfTestImages; i++)
          {
              
+             ImageDataClass tempClass;
+             tempClass.initialize(i);
+             
+             GridImages.push_back(tempClass);
+             
+             /*
              imagePaths[i] = ofToString(folderName) + "/" + ofToString(imageBaseName) + ofToString(i+1) + ofToString(imageExtension);
              
              ofImage tempImage;
@@ -72,8 +81,7 @@ void ofApp::setup(){
                          }
                             
                         }
-
-                   
+   
                }
                // cleaning up to integers for SOM
              //for Exposure
@@ -94,7 +102,7 @@ void ofApp::setup(){
              cout << i <<" + "<< exifDataInt1[i]<<" + "<< exifDataInt2[i] <<" + " <<exifDataInt3[i] << endl;
              cout << i <<" + "<< exifDataString1[i]<<" + "<< exifDataString2[i] <<" + "<<exifDataString3[i] << endl;
 
-             
+             */
             
              
              
@@ -107,12 +115,13 @@ void ofApp::setup(){
 //    cout<< std::max_element( exifDataInt1[0], exifDataInt1[numberOfTestImages-1] );
 
 
-    double minInArray1 =  minInArray( exifDataInt1 );
-    cout<<minInArray1<<endl;
-    
-    double maxInArray1 =  maxInArray( exifDataInt1 );
-    cout<<maxInArray1;
-    
+//    
+//    double minInArray1 =  minInArray( exifDataInt1 );
+//    cout<<minInArray1<<endl;
+//    
+//    double maxInArray1 =  maxInArray( exifDataInt1 );
+//    cout<<maxInArray1;
+//    
     // WELL THAT WORKS
     
     
@@ -127,23 +136,25 @@ void ofApp::setup(){
     //creating FBO
     
     fbo.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGB );
-    fbo2.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGB );
+    //fbo2.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGB );
     
     fbo.begin();
     ofClear(255,255,255);
     //ofTranslate(xMargin, yMargin);
     for (int i = 0 ; i < numberOfTestImages; i++)
         {
-        imageThumbs[i].draw( i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight );
-        ofSetColor(ofColor::green);
+        //imageThumbs[i].draw( i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight );
+        GridImages[i].thumbImage.draw(i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight);
             
-        ofDrawBitmapString(exifDataString1[i] , i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight + 20 );
-            
-        ofDrawBitmapString(exifDataString2[i]  , i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight + 40 );
-            
-        ofDrawBitmapString(exifDataString3[i] , i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight + 60 );
-            
-        ofSetColor(ofColor::white );
+//        ofSetColor(ofColor::green);
+//            
+//        ofDrawBitmapString(exifDataString1[i] , i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight + 20 );
+//            
+//        ofDrawBitmapString(exifDataString2[i]  , i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight + 40 );
+//            
+//        ofDrawBitmapString(exifDataString3[i] , i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight + 60 );
+//            
+//        ofSetColor(ofColor::white );
         }
     fbo.end();
     
@@ -152,14 +163,14 @@ void ofApp::setup(){
     
     //new SOM stuff
     
-    double minInstance[3] = { minInArray( exifDataInt1 ), minInArray( exifDataInt2 ),minInArray( exifDataInt3 ) };
-    double maxInstance[3] = { maxInArray( exifDataInt1 ), maxInArray( exifDataInt1 ),maxInArray( exifDataInt1 ) };
-    
-    som.setFeaturesRange(3, minInstance, maxInstance);
-    som.setInitialLearningRate(0.07);
-    som.setNumIterations(4000);
-    som.setMapSize(gridSize, gridSize);
-    som.setup();
+//    double minInstance[3] = { minInArray( exifDataInt1 ), minInArray( exifDataInt2 ),minInArray( exifDataInt3 ) };
+//    double maxInstance[3] = { maxInArray( exifDataInt1 ), maxInArray( exifDataInt1 ),maxInArray( exifDataInt1 ) };
+//    
+//    som.setFeaturesRange(3, minInstance, maxInstance);
+//    som.setInitialLearningRate(0.07);
+//    som.setNumIterations(4000);
+//    som.setMapSize(gridSize, gridSize);
+//    som.setup();
 
     
     
@@ -171,9 +182,9 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 
-    int randomNumber = ofRandom(100);
-    double instance[3] = { exifDataInt1[randomNumber],exifDataInt2[randomNumber],exifDataInt3[randomNumber] };
-    som.updateMap(instance);
+//    int randomNumber = ofRandom(100);
+//    double instance[3] = { exifDataInt1[randomNumber],exifDataInt2[randomNumber],exifDataInt3[randomNumber] };
+//    som.updateMap(instance);
     
     
     //in update map create quantized movements
@@ -207,27 +218,27 @@ void ofApp::update(){
 //    }
     
     
-    fbo2.begin();
-    ofClear(255,255,255);
-    for (int i = 0; i < gridSize; i++) {
-        for (int j = 0; j < gridSize; j++) {
-            
-            double * exifData = som.getMapAt(i,j);
-            ofSetColor(ofColor::blue);
-            
-            ofDrawBitmapString( ofToString( exifData[0] ), i * imageThumbWidth , j * imageThumbHeight + 20 );
-            
-            ofDrawBitmapString(ofToString( exifData[1] )  , i * imageThumbWidth , j * imageThumbHeight + 40 );
-            
-            ofDrawBitmapString(ofToString( exifData[2] ) , i * imageThumbWidth , j * imageThumbHeight + 60 );
-            
-            ofSetColor(ofColor::white );
-
-            //imageThumbs[i * gridSize + j ].draw( i * imageThumbWidth , j * imageThumbHeight );
-            }
-
-        }
-    fbo2.end();
+//    fbo2.begin();
+//    ofClear(255,255,255);
+//    for (int i = 0; i < gridSize; i++) {
+//        for (int j = 0; j < gridSize; j++) {
+//            
+//            double * exifData = som.getMapAt(i,j);
+//            ofSetColor(ofColor::blue);
+//            
+//            ofDrawBitmapString( ofToString( exifData[0] ), i * imageThumbWidth , j * imageThumbHeight + 20 );
+//            
+//            ofDrawBitmapString(ofToString( exifData[1] )  , i * imageThumbWidth , j * imageThumbHeight + 40 );
+//            
+//            ofDrawBitmapString(ofToString( exifData[2] ) , i * imageThumbWidth , j * imageThumbHeight + 60 );
+//            
+//            ofSetColor(ofColor::white );
+//
+//            //imageThumbs[i * gridSize + j ].draw( i * imageThumbWidth , j * imageThumbHeight );
+//            }
+//
+//        }
+//    fbo2.end();
     
     
     
@@ -269,24 +280,24 @@ void ofApp::draw(){
         sourceImgThumbs[i].draw(25 + 195*i, 550, 185, 185);
      */
     
-    ofDrawBitmapString("Self-organizing map: Iteration " + ofToString(som.getCurrentIteration()) + "/" + ofToString(som.getNumIterations()), 530, 20);
+    //ofDrawBitmapString("Self-organizing map: Iteration " + ofToString(som.getCurrentIteration()) + "/" + ofToString(som.getNumIterations()), 530, 20);
     
     
     fbo.draw(xMargin, yMargin);
     //fbo2.draw(xMargin + fullImageX- 200, yMargin);
 
     //create selected image
-    ofPushMatrix();
-    selectedFullImagePath = ofToString(folderName) + "/" + ofToString(imageBaseName) + ofToString(selectedImageNumber + 1 ) + ofToString(imageExtension);
-    selectedFullImage.loadImage(selectedFullImagePath);
-    selectedFullImage.draw(fullImageX , yMargin);
-    ofPopMatrix();
-    
-    ofDrawBitmapString("selected image number: " + ofToString(selectedImageNumber), fullImageX, metaBeginY);
-    ofDrawBitmapString("image Width  " + ofToString(selectedFullImage.width), fullImageX, metaBeginY + metaLineHeight);
-    ofDrawBitmapString("selected image number: " + ofToString(selectedFullImage.height), fullImageX, metaBeginY + 2 * metaLineHeight );
-    ofDrawBitmapString("framerate: " + ofToString( int(ofGetFrameRate()) ), fullImageX, metaBeginY + 3 * metaLineHeight);
-    
+//    ofPushMatrix();
+//    selectedFullImagePath = ofToString(folderName) + "/" + ofToString(imageBaseName) + ofToString(selectedImageNumber + 1 ) + ofToString(imageExtension);
+//    selectedFullImage.loadImage(selectedFullImagePath);
+//    selectedFullImage.draw(fullImageX , yMargin);
+//    ofPopMatrix();
+//    
+//    ofDrawBitmapString("selected image number: " + ofToString(selectedImageNumber), fullImageX, metaBeginY);
+//    ofDrawBitmapString("image Width  " + ofToString(selectedFullImage.width), fullImageX, metaBeginY + metaLineHeight);
+//    ofDrawBitmapString("selected image number: " + ofToString(selectedFullImage.height), fullImageX, metaBeginY + 2 * metaLineHeight );
+//    ofDrawBitmapString("framerate: " + ofToString( int(ofGetFrameRate()) ), fullImageX, metaBeginY + 3 * metaLineHeight);
+//    
     
 }
 
@@ -364,6 +375,8 @@ void ofApp::gotMessage(ofMessage msg){
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
 
 }
+
+
 
 
 

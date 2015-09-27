@@ -4,6 +4,8 @@
 #include "ofxSelfOrganizingMap.h"
 #include "ofxExif.h"
 
+#include "ImageDataClass.h"
+
 
 // for a grid of 600 * 600 p , change accordingly
 
@@ -110,7 +112,10 @@ class ofApp : public ofBaseApp{
         ofxSelfOrganizingMap som;
 
     
+    //    ImageDataClass GridImages[numberOfTestImages];
     
+        
+        vector<ImageDataClass> GridImages;
     
         
     
