@@ -29,7 +29,7 @@ const int yMargin = 50;
 
 
 const int fullImageX = 1200;
-const int metaBeginY = 750;
+const int metaBeginY = 800;
 const int metaLineHeight = 25;
 const int convergingMinimum = 6;
 
@@ -75,9 +75,9 @@ class ofApp : public ofBaseApp{
     
         void drawCurrentStateParameters();
     
+        void updatePlots();
     
-    
-    
+        void refreshFeed();
     
     
     
@@ -106,6 +106,7 @@ class ofApp : public ofBaseApp{
         //FBO for image grid
         ofFbo fbo;
         ofFbo fbo2;
+        ofFbo plotsFBO;
     
         //SOM
         //ofxSelfOrganizingMap som;
@@ -137,6 +138,14 @@ class ofApp : public ofBaseApp{
         // make sure they are doubles
     
         int imageStack = numberOfTestImages;
+    
+        int dataCellWidth = 10 ;
+        int dataCellHeight = 20 ;
+        int heightDifference = 20;
+    
+        double plotWidth = 400;
+    
+    
     
     
 

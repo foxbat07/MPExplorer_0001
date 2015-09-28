@@ -47,7 +47,9 @@ void ofApp::setup(){
 
     //creating FBO
     
-    fbo.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGB );
+    fbo.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGBA );
+    plotsFBO.allocate(plotWidth , 10 * dataCellHeight , GL_RGBA);
+    
     //fbo2.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGB );
     
     fbo.begin();
@@ -56,7 +58,7 @@ void ofApp::setup(){
     for (int i = 0 ; i < numberOfTestImages; i++)
         {
         //imageThumbs[i].draw( i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight );
-        GridImages[i].thumbImage.draw(i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight);
+        GridImages[i].thumbImage.draw(i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight );
         
             
         }
@@ -72,6 +74,8 @@ void ofApp::update(){
     
     //update FBO
     //ofTranslate(xMargin, yMargin);
+    updatePlots();
+    
 
 }
 
@@ -79,7 +83,7 @@ void ofApp::update(){
 void ofApp::draw(){
 
     
-    ofBackground(64);
+    ofBackground(0);
     
     
     /*
@@ -95,8 +99,14 @@ void ofApp::draw(){
     
     
     fbo.draw(xMargin, yMargin);
+    
+    
+    //if(pickedImagevector.size() >0 )
+    plotsFBO.draw(fullImageX , yMargin + 520  );
+    
     //fbo2.draw(xMargin + fullImageX- 200, yMargin);
     drawFullImage(selectedImageNumber);
+    drawCurrentStateParameters();
     
     
     
@@ -151,26 +161,13 @@ void ofApp::mouseReleased(int x, int y, int button){
     
     //mouse clicks
     
-    if ( x > xMargin && y > yMargin &&  x <  ( xMargin + gridSize * imageThumbWidth ) &&  y < ( yMargin + gridSize * imageThumbHeight ) )
-        {
-            mouseInsideGrid = true;
-            
-            int xLevel = ( x - xMargin ) / imageThumbWidth;
-            int yLevel = ( y - yMargin ) / imageThumbHeight;
-            
-            
-            selectedImageNumber = yLevel  + xLevel * gridSize;
-            
-            
-            // updating selections
-            
-            updateSelections(selectedImageNumber);
-            
-            
-            
-        }
+    
+    updateSelections(selectedImageNumber);
+    
     
     updateGridFbo();
+    updatePlots();
+    
     if ( pickedImagevector.size() >= convergingMinimum )
     {
         theConvergingFunction();
@@ -244,7 +241,7 @@ void ofApp::drawFullImage(int selectedImageNumber)
     selectedFullImage.draw(fullImageX , yMargin);
     ofPopMatrix();
     
-    drawCurrentStateParameters();
+    
                                                                                                   
        
     
@@ -507,6 +504,8 @@ void ofApp::theConvergingFunction()
             
             for ( int i = 0 ; i< GridImages.size() ; i ++ )
                 {
+                 // setting up persistance
+                    
                  if ( GridImages[i].dFocalLength >= dMinFocalLength &&  GridImages[i].dFocalLength <= dMaxFocalLength )
                      {
                       if ( GridImages[i].dShutterSpeed >= dMinShutterSpeed &&  GridImages[i].dShutterSpeed <= dMaxShutterSpeed )
@@ -532,6 +531,8 @@ void ofApp::theConvergingFunction()
                     GridImages[i].isImageInRange = false;
 
                     }
+                    
+                    //bool back = checkIfImageValid(GridImages[i] )
                     
                     
                 }
@@ -652,16 +653,16 @@ bool  ofApp::checkIfImageValid ( ImageDataClass tempImage)
         
     }
     
-    
-    
+   
     
 }
                                                                                                   
-                                                                                                  
-                                                                                                  
+
                                                                                                   
 void ofApp::drawCurrentStateParameters()
   {
+      ofSetColor(ofColor::blueSteel);
+      
       ofDrawBitmapString("selected image number: " + ofToString(selectedImageNumber), fullImageX, metaBeginY);
       ofDrawBitmapString("image Width  " + ofToString(selectedFullImage.width), fullImageX, metaBeginY + metaLineHeight);
       ofDrawBitmapString("selected image number: " + ofToString(selectedFullImage.height), fullImageX, metaBeginY + 2 * metaLineHeight );
@@ -676,8 +677,90 @@ void ofApp::drawCurrentStateParameters()
       ofDrawBitmapString("Stack Number : " + ofToString( imageStack  ), fullImageX, metaBeginY + 8 * metaLineHeight);
       ofDrawBitmapString("Images Deleted: " + ofToString( imagesRemoved.size()  ), fullImageX, metaBeginY + 9 * metaLineHeight);
       
-      
+      ofSetColor(ofColor::white);
+
   }
-                                                                                                  
+
+
+void ofApp::updatePlots()
+{
+    cout<<"updating plots" << endl ;
+
+    
+    vector<double> dISOList;
+    vector<double> dFocalLengthList;
+    vector<double> dShutterSpeedList;
+    vector<double> dApertureList;
+    
+    for ( int  i = 0 ; i < pickedImagevector.size() ; i++ )
+    {
+        // create ISO chart
+        dISOList.push_back(GridImages[pickedImagevector[i]].dISOSpeed);
+        dFocalLengthList.push_back(GridImages[pickedImagevector[i]].dFocalLength);
+        
+        dShutterSpeedList.push_back(GridImages[pickedImagevector[i]].dShutterSpeed);
+        dApertureList.push_back(GridImages[pickedImagevector[i]].dAperture);
+        
+    }   //aggregated list
+    
+    
+    // drawing
+    plotsFBO.begin();
+    ofBackground(0);
+       //ofTranslate(fullImageX, metaBeginY );
+    
+    for ( int i = 0 ; i < pickedImagevector.size() ; i++ )
+    {
+        
+        ofSetColor(ofColor::blueSteel);
+        ofFill();
+        
+        ofDrawBitmapString("ISO Speed:  ", 0, heightDifference -4);
+         ofDrawBitmapString("Focal Length:  ", 0, 3 * heightDifference  -4);
+        ofDrawBitmapString("Shutter Speed:  ", 0, 5 * heightDifference -4 );
+        ofDrawBitmapString("Aperture :  ", 0, 7 * heightDifference -4  );
+        ofSetColor(ofColor::blueSteel , 70 );
+        
+        ofRect( ( dISOList[i] - dMinISOSpeed )/ ( dMaxISOSpeed - dMinISOSpeed ) * plotWidth, heightDifference, dataCellWidth, dataCellHeight);
+        
+       
+        
+        ofRect( ( dFocalLengthList[i] - dMinFocalLength )/ ( dMaxFocalLength - dMinFocalLength )  * plotWidth, 3 * heightDifference , dataCellWidth, dataCellHeight);
+        
+        
+        
+        
+        ofRect( ( dShutterSpeedList[i] - dMinShutterSpeed )/ ( dMaxShutterSpeed - dMinShutterSpeed )  * plotWidth, 5 * heightDifference , dataCellWidth, dataCellHeight);
+
+        
+        ofRect( ( dApertureList[i] - dMinAperture )/ ( dMaxAperture - dMinAperture ) * plotWidth , 7 * heightDifference , dataCellWidth, dataCellHeight);
+        
+        
+        ofSetColor( ofColor::white);
+
+        
+    }
+       plotsFBO.end();
+    
+    
+    
+    
+}
+
+void ofApp::refreshFeed()
+{
+    
+    for ( int  i  = 0 ; i < GridImages.size() ; i++ )
+    {
+        
+        
+        if ( !GridImages[i].isImageSelected)
+        {
+            //remove photo and replace
+            
+        }
+    }
+}
+    
                                                                                                 
 
