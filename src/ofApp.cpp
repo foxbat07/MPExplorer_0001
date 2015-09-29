@@ -114,6 +114,17 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    if( key == 'r')
+    {
+        refreshFeed();
+        
+    }
+    
+    if ( key == 'c')
+    {
+        clearSelections();
+        
+    }
 
 }
 
@@ -294,6 +305,7 @@ void ofApp::clearSelections()
         GridImages[i].isImageSelected = false;
         
     }
+    updateGridFbo();
     
 }
 
@@ -684,7 +696,7 @@ void ofApp::drawCurrentStateParameters()
 
 void ofApp::updatePlots()
 {
-    cout<<"updating plots" << endl ;
+    //cout<<"updating plots" << endl ;
 
     
     vector<double> dISOList;
@@ -758,9 +770,48 @@ void ofApp::refreshFeed()
         {
             //remove photo and replace
             
+            
+            //GridImages.erase(GridImages.begin() + i );
+            imagesRemoved.push_back(i);
+            //check if new image is any good
+            bool newImageFound = false;
+            
+            while( newImageFound == false )
+            {
+                ImageDataClass tempImage;
+                tempImage.initialize(++imageStack);
+                
+                bool isValid =  checkIfImageValid(tempImage);
+                
+                if (isValid)
+                {
+                    GridImages[i] = tempImage;   //swap it for the new one, although its position will be wierd
+                    GridImages[i].imageNumber = i; // resetting i. else it be in wierd places
+                    newImageFound = true;
+                    break;
+                    
+                }
+                else
+                {
+                    newImageFound = false;
+                    continue;
+                    
+                }
+                
+            }
+            
+            // image should be swapped at this point
+            
+            // add function to set number and position
+            
+
+            
+            
         }
     }
-}
+    updateGridFbo();
     
-                                                                                                
+}
+
+
 

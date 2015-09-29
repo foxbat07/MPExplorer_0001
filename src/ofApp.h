@@ -3,7 +3,6 @@
 #include "ofMain.h"
 #include "ofxSelfOrganizingMap.h"
 #include "ofxExif.h"
-
 #include "ImageDataClass.h"
 
 
@@ -149,6 +148,7 @@ class ofApp : public ofBaseApp{
     
     
 
+            
     
     
     
