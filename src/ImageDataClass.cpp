@@ -18,6 +18,14 @@ string exifFolder = "meta/exif";
 string exifBaseName = "exif";
 string exifExtention = ".txt";
 
+string tagFolder = "meta/tags";
+string tagName = "tags";
+string tagExtention = ".txt";
+
+string thumbnailFolder = "thumb";
+string thumbnailName = "im";
+string thumbnailExtention = ".jpg";
+
 
 
 const int imageThumbWidth = 100;
@@ -34,6 +42,7 @@ const int gridSize = 10;
 
 void ImageDataClass::initialize(int i)
 {
+    ///start of getting image
     
     
     this->imagePath = ofToString(folderName) + "/" + ofToString(imageBaseName) + ofToString(i+1) + ofToString(imageExtension);
@@ -63,98 +72,139 @@ void ImageDataClass::initialize(int i)
     
     
     this->thumbImage.resize( imageThumbWidth, imageThumbHeight);
-    //// end of getting the image
     
+    
+    //saving out the image
+    
+    string thumbnailImagePath = ofToString(thumbnailFolder) + "/" + ofToString(thumbnailName) + ofToString(i+1) +".png";
+    
+    this->thumbImage.saveImage(thumbnailImagePath);
+    
+
+    
+    
+    //// end of getting the image
+
     
     //start of getting exif data
     
     
-    string exifFilePath = ofToString(folderName) +"/"+ ofToString(exifFolder) + "/" + ofToString(exifBaseName) + ofToString(i+1) + ofToString(exifExtention);
+//    string exifFilePath = ofToString(folderName) +"/"+ ofToString(exifFolder) + "/" + ofToString(exifBaseName) + ofToString(i+1) + ofToString(exifExtention);
+//    
+//    ofFile file(exifFilePath, ofFile::ReadOnly);
+//    if( file.isFile())
+//    {
+//        ofBuffer buffer = file.readToBuffer();
+//        //cout << buffer.getText()<<endl ;
+//        
+//        int eCounter = 0 ;
+//        int ACounter = 0 ;
+//        
+//        
+//        
+//        while(!buffer.isLastLine() )
+//        {
+//            string exifLine = buffer.getNextLine();
+//            
+//            if ( exifLine == "-Exposure" )
+//                this->sShutterSpeed.append(buffer.getNextLine() + "  ");
+//            
+//            if ( exifLine == "-Aperture" && ACounter == 0 )
+//            {
+//                this->sAperture.append(buffer.getNextLine() + "  ");
+//                ACounter++;
+//            }
+//            
+//            
+//            if ( exifLine == "-ISO Speed" )
+//            {
+//                this->sISOSpeed.append(buffer.getNextLine() + "  ");
+//                
+//            }
+//            
+//            if ( exifLine == "-Focal Length" )
+//            {
+//                this->sFocalLength.append(buffer.getNextLine() + "  ");
+//                break;
+//
+//            }
+//            
+//        }
+//                
+//        
+//        // cleaning up to integers for SOM
+//        //for Exposure
+//        vector<string> ExposureSplit;
+//        ExposureSplit =  ofSplitString( this->sShutterSpeed , " ");
+//        this->dShutterSpeed = ofToDouble ( ExposureSplit[0] ) ;
+//        
+//        //for Aperture
+//        vector<string> ApertureSplit;
+//        ApertureSplit =  ofSplitString(this->sAperture , "f/");
+//        this->dAperture = ofToDouble ( ApertureSplit[ApertureSplit.size()-1] );
+//        
+//        
+//        // for ISO speed
+//        this->dISOSpeed = ofToDouble ( this->sISOSpeed ) ;
+//        
+//        // focal length split
+//        vector<string> FocalLengthSplit;
+//        FocalLengthSplit =  ofSplitString( this->sFocalLength , " ");
+//        this->dFocalLength = ofToDouble ( FocalLengthSplit[0] ) ;
+//
+//        
+//        
+//        //cout << exifDataString1[i] << exifDataString2[i] << exifDataString3[i] <<endl;
+//        //cout << i <<" + "<< this->dISOSpeed<<" + "<< this->dAperture <<" + " << this->dShutterSpeed << endl;
+//        
+//        
+//    
+//        //EXIFInfo exifData;
+//    
+//    }
+//    
+//    
+//    
+//    ///getting tag data
+//    string tagPath = ofToString(folderName) +"/"+ ofToString(tagFolder) + "/" + ofToString(tagName) + ofToString(i+1) + ofToString(tagExtention);
+//    
+//    ofFile tagFile(tagPath, ofFile::ReadOnly);
+//    if( tagFile.isFile())
+//    {
+//        ofBuffer buffer = tagFile.readToBuffer();
+//        //string tagString;
+//        
+//        while(!buffer.isLastLine() )
+//             {
+//                 string tag = buffer.getNextLine();
+//
+//                 tagString.append(tag);
+//                 tagString.append(" ");
+//             }
+//        // should have a string by now
+//
+//    }
     
-    ofFile file(exifFilePath, ofFile::ReadOnly);
-    if( file.isFile())
-    {
-        ofBuffer buffer = file.readToBuffer();
-        //cout << buffer.getText()<<endl ;
+    
         
-        int eCounter = 0 ;
-        int ACounter = 0 ;
-        
-        
-        
-        while(!buffer.isLastLine() )
-        {
-            string exifLine = buffer.getNextLine();
-            
-            if ( exifLine == "-Exposure" )
-                this->sShutterSpeed.append(buffer.getNextLine() + "  ");
-            
-            if ( exifLine == "-Aperture" && ACounter == 0 )
-            {
-                this->sAperture.append(buffer.getNextLine() + "  ");
-                ACounter++;
-            }
-            
-            
-            if ( exifLine == "-ISO Speed" )
-            {
-                this->sISOSpeed.append(buffer.getNextLine() + "  ");
-                
-            }
-            
-            if ( exifLine == "-Focal Length" )
-            {
-                this->sFocalLength.append(buffer.getNextLine() + "  ");
-                break;
-
-            }
-            
-        }
-                
-        
-        // cleaning up to integers for SOM
-        //for Exposure
-        vector<string> ExposureSplit;
-        ExposureSplit =  ofSplitString( this->sShutterSpeed , " ");
-        this->dShutterSpeed = ofToDouble ( ExposureSplit[0] ) ;
-        
-        //for Aperture
-        vector<string> ApertureSplit;
-        ApertureSplit =  ofSplitString(this->sAperture , "f/");
-        this->dAperture = ofToDouble ( ApertureSplit[ApertureSplit.size()-1] );
-        
-        
-        // for ISO speed
-        this->dISOSpeed = ofToDouble ( this->sISOSpeed ) ;
-        
-        // focal length split
-        vector<string> FocalLengthSplit;
-        FocalLengthSplit =  ofSplitString( this->sFocalLength , " ");
-        this->dFocalLength = ofToDouble ( FocalLengthSplit[0] ) ;
-
-        
-        
-        //cout << exifDataString1[i] << exifDataString2[i] << exifDataString3[i] <<endl;
-        //cout << i <<" + "<< this->dISOSpeed<<" + "<< this->dAperture <<" + " << this->dShutterSpeed << endl;
         
         
     
-        //EXIFInfo exifData;
+    ///
     
-    }
     
     // add if 0 case later
     //string imagePath;
-    this->imageNumber = i ; // keeping track of initial numbers
-
-    
-    int imageXposition = i%gridSize * imageThumbHeight;
-    int imageYposition = i/gridSize * imageThumbWidth;
-    
-    
-    this->isImageSelected = false;
-    this->isImagePersist = true  ;
-    this->isImageInRange = true ;
+//    this->imageNumber = i ; // keeping track of initial numbers
+//
+//    
+//    int imageXposition = i%gridSize * imageThumbHeight;
+//    int imageYposition = i/gridSize * imageThumbWidth;
+//    
+//    
+//    this->isImageSelected = false;
+//    this->isImagePersist = true  ;
+//    this->isImageInRange = true ;
 
     }
 

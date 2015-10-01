@@ -13,23 +13,45 @@ void ofApp::setup(){
     ofEnableSmoothing();
 
     // switching to new scheme of things
+    // create new file ofFile
     
-    for (int i = 0, j = 0 ; j  < numberOfTestImages; i++)
+    //ofFile file( "metadata5000.txt", ofFile::WriteOnly);
+    //ofFile file( "tagwords10000.txt", ofFile::WriteOnly);
+    
+    
+    for (int i = 0, j = 0 ; j  < 25000; i++)
          {
              
              ImageDataClass tempClass;
              tempClass.initialize(i);
-             if ( tempClass.dAperture != 0 && tempClass.dISOSpeed != 0 && tempClass.dFocalLength > 10 && tempClass.dShutterSpeed != 0 )
+            // if ( tempClass.dAperture != 0 && tempClass.dISOSpeed != 0 && tempClass.dFocalLength > 10 && tempClass.dShutterSpeed != 0 )
              {
                  tempClass.imageNumber = j ;
-                 GridImages.push_back(tempClass);
-                 j++;
+                 
+                 //write file
+//                 file << i << " " << tempClass.dAperture << " " << tempClass.dISOSpeed << " " << tempClass.dFocalLength << " " << tempClass.dShutterSpeed << endl;
+//                 
+                 //file << i << " " << tempClass.tagString << endl;
                 
+                 
+                 //GridImages.push_back(tempClass);
+                 j++;
+               
              }
              
-                 
              imageStack =  i ; 
          }
+    
+    
+    
+//    void saveSceneConfig(std::string name, Scene *s){
+//        ofFile file(name + ".txt", ofFile::WriteOnly);
+//        file << s->x << " " << s->y << " ";
+//        file << s->scale << " " << s->scalex << " " << s->scaley << " ";
+//        file << s->rotate << " ";
+//        file << s->r << " " << s->g << " " << s->b << " " << s->brightness;
+//    };
+
     
     
     
@@ -44,25 +66,28 @@ void ofApp::setup(){
 //    
     // WELL THAT WORKS
     
+    //comment
 
     //creating FBO
     
-    fbo.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGBA );
-    plotsFBO.allocate(plotWidth , 10 * dataCellHeight , GL_RGBA);
+//    fbo.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGBA );
+//    plotsFBO.allocate(plotWidth , 10 * dataCellHeight , GL_RGBA);
+//    
+//    //fbo2.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGB );
+//    
+//    fbo.begin();
+//    ofClear(255,255,255);
+//    //ofTranslate(xMargin, yMargin);
+//    for (int i = 0 ; i < numberOfTestImages; i++)
+//        {
+//        //imageThumbs[i].draw( i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight );
+//        GridImages[i].thumbImage.draw(i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight );
+//        
+//            
+//        }
+//    fbo.end();
     
-    //fbo2.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGB );
-    
-    fbo.begin();
-    ofClear(255,255,255);
-    //ofTranslate(xMargin, yMargin);
-    for (int i = 0 ; i < numberOfTestImages; i++)
-        {
-        //imageThumbs[i].draw( i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight );
-        GridImages[i].thumbImage.draw(i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight );
-        
-            
-        }
-    fbo.end();
+    //uncomment
     
     //fbo2 = fbo;
     
@@ -74,7 +99,10 @@ void ofApp::update(){
     
     //update FBO
     //ofTranslate(xMargin, yMargin);
-    updatePlots();
+    
+    //comment
+//  updatePlots();
+    //uncomment
     
 
 }
@@ -98,15 +126,19 @@ void ofApp::draw(){
     //ofDrawBitmapString("Self-organizing map: Iteration " + ofToString(som.getCurrentIteration()) + "/" + ofToString(som.getNumIterations()), 530, 20);
     
     
-    fbo.draw(xMargin, yMargin);
+    //comment
     
+//    fbo.draw(xMargin, yMargin);
+//    
+//    
+//    //if(pickedImagevector.size() >0 )
+//    plotsFBO.draw(fullImageX , yMargin + 520  );
+//    
+//    //fbo2.draw(xMargin + fullImageX- 200, yMargin);
+//    drawFullImage(selectedImageNumber);
+//    drawCurrentStateParameters();
     
-    //if(pickedImagevector.size() >0 )
-    plotsFBO.draw(fullImageX , yMargin + 520  );
-    
-    //fbo2.draw(xMargin + fullImageX- 200, yMargin);
-    drawFullImage(selectedImageNumber);
-    drawCurrentStateParameters();
+    //uncomment
     
     
     

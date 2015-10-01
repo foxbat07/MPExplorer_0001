@@ -8,7 +8,7 @@
 
 // for a grid of 600 * 600 p , change accordingly
 
-const int numberOfTestImages = 100;
+const int numberOfTestImages = 10000;
 
 
 const int imageThumbWidth = 100;

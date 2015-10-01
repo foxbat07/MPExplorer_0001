@@ -50,10 +50,17 @@ class ImageDataClass
     
     bool imageWidth;
     bool imageheight;
+        
+        
+    string tagPath;
+    vector <string> tagwords;
+    string tagString;
 
 
     void initialize(int i);
     //void update();
+        
+        
         
     
     
