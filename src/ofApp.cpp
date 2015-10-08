@@ -15,26 +15,22 @@ void ofApp::setup(){
     // switching to new scheme of things
     // create new file ofFile
     
-    //ofFile file( "metadata5000.txt", ofFile::WriteOnly);
-    //ofFile file( "tagwords10000.txt", ofFile::WriteOnly);
     
-    
-    for (int i = 0, j = 0 ; j  < 25000; i++)
+    for (int i = 0, j = 0 ; j  < numberOfTestImages; i++)
          {
              
              ImageDataClass tempClass;
              tempClass.initialize(i);
-            // if ( tempClass.dAperture != 0 && tempClass.dISOSpeed != 0 && tempClass.dFocalLength > 10 && tempClass.dShutterSpeed != 0 )
+             if ( tempClass.dAperture != 0 && tempClass.dISOSpeed != 0 && tempClass.dFocalLength > 10 && tempClass.dShutterSpeed != 0 )
              {
-                 tempClass.imageNumber = j ;
-                 
+                 tempClass.imageNumber = j ;                 
                  //write file
 //                 file << i << " " << tempClass.dAperture << " " << tempClass.dISOSpeed << " " << tempClass.dFocalLength << " " << tempClass.dShutterSpeed << endl;
 //                 
                  //file << i << " " << tempClass.tagString << endl;
                 
                  
-                 //GridImages.push_back(tempClass);
+                 GridImages.push_back(tempClass);
                  j++;
                
              }
@@ -70,22 +66,22 @@ void ofApp::setup(){
 
     //creating FBO
     
-//    fbo.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGBA );
-//    plotsFBO.allocate(plotWidth , 10 * dataCellHeight , GL_RGBA);
-//    
-//    //fbo2.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGB );
-//    
-//    fbo.begin();
-//    ofClear(255,255,255);
-//    //ofTranslate(xMargin, yMargin);
-//    for (int i = 0 ; i < numberOfTestImages; i++)
-//        {
-//        //imageThumbs[i].draw( i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight );
-//        GridImages[i].thumbImage.draw(i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight );
-//        
-//            
-//        }
-//    fbo.end();
+    fbo.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGBA );
+    plotsFBO.allocate(plotWidth , 10 * dataCellHeight , GL_RGBA);
+    
+    //fbo2.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGB );
+    
+    fbo.begin();
+    ofClear(255,255,255);
+    //ofTranslate(xMargin, yMargin);
+    for (int i = 0 ; i < numberOfTestImages; i++)
+        {
+        //imageThumbs[i].draw( i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight );
+        GridImages[i].thumbImage.draw(i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight );
+        
+            
+        }
+    fbo.end();
     
     //uncomment
     
@@ -101,7 +97,7 @@ void ofApp::update(){
     //ofTranslate(xMargin, yMargin);
     
     //comment
-//  updatePlots();
+    updatePlots();
     //uncomment
     
 
@@ -128,15 +124,15 @@ void ofApp::draw(){
     
     //comment
     
-//    fbo.draw(xMargin, yMargin);
-//    
-//    
-//    //if(pickedImagevector.size() >0 )
-//    plotsFBO.draw(fullImageX , yMargin + 520  );
-//    
-//    //fbo2.draw(xMargin + fullImageX- 200, yMargin);
-//    drawFullImage(selectedImageNumber);
-//    drawCurrentStateParameters();
+    fbo.draw(xMargin, yMargin);
+    
+    
+    //if(pickedImagevector.size() >0 )
+    plotsFBO.draw(fullImageX , yMargin + 520  );
+    
+    //fbo2.draw(xMargin + fullImageX- 200, yMargin);
+    drawFullImage(selectedImageNumber);
+    drawCurrentStateParameters();
     
     //uncomment
     

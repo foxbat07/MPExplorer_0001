@@ -20,11 +20,15 @@
 class ImageDataClass
     {
     public:
+        
     ofImage fullImage;
     ofImage thumbImage;
+        
     EXIFInfo exifData;
 
     string imagePath;
+    string thumbPath;
+    
     int imageNumber;
 
     string sFocalLength;
@@ -51,8 +55,6 @@ class ImageDataClass
     bool imageWidth;
     bool imageheight;
         
-        
-    string tagPath;
     vector <string> tagwords;
     string tagString;
 
