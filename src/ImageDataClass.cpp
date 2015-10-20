@@ -52,6 +52,10 @@ void ImageDataClass::initialize(int i)
     
     this->thumbImage.loadImage(this->imagePath);
     
+    //loader.loadFromDisk(this->thumbImage, this->imagePath);
+    //threaded image loader doesnt work
+    
+    
     int aspectDifference = this->fullImage.width - this->fullImage.height;
     
     if ( aspectDifference == 0 )

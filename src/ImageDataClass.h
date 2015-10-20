@@ -25,6 +25,7 @@ class ImageDataClass
     ofImage thumbImage;
         
     EXIFInfo exifData;
+    //ofxThreadedImageLoader loader;
 
     string imagePath;
     string thumbPath;

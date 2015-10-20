@@ -38,6 +38,9 @@ void ofApp::setup(){
              imageStack =  i ; 
          }
     
+    // initialize SOM
+    
+    initializeSOM();
     
     
 //    void saveSceneConfig(std::string name, Scene *s){
@@ -48,11 +51,7 @@ void ofApp::setup(){
 //        file << s->r << " " << s->g << " " << s->b << " " << s->brightness;
 //    };
 
-    
-    
-    
-    
-    //find min and max for SOM
+//    find min and max for SOM
 //    
 //    double minInArray1 =  minInArray( exifDataInt1 );
 //    cout<<minInArray1<<endl;
@@ -60,7 +59,7 @@ void ofApp::setup(){
 //    double maxInArray1 =  maxInArray( exifDataInt1 );
 //    cout<<maxInArray1;
 //    
-    // WELL THAT WORKS
+// WELL THAT WORKS
     
     //comment
 
@@ -69,7 +68,7 @@ void ofApp::setup(){
     fbo.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGBA );
     plotsFBO.allocate(plotWidth , 10 * dataCellHeight , GL_RGBA);
     
-    //fbo2.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGB );
+    fbo2.allocate(gridSize * imageThumbWidth, gridSize* imageThumbHeight, GL_RGB );
     
     fbo.begin();
     ofClear(255,255,255);
@@ -95,6 +94,8 @@ void ofApp::update(){
     
     //update FBO
     //ofTranslate(xMargin, yMargin);
+    
+    updateSOM();
     
     //comment
     updatePlots();
@@ -130,8 +131,8 @@ void ofApp::draw(){
     //if(pickedImagevector.size() >0 )
     plotsFBO.draw(fullImageX , yMargin + 520  );
     
-    //fbo2.draw(xMargin + fullImageX- 200, yMargin);
-    drawFullImage(selectedImageNumber);
+    fbo2.draw(xMargin + fullImageX- 200, yMargin);
+    //drawFullImage(selectedImageNumber);
     drawCurrentStateParameters();
     
     //uncomment
@@ -299,10 +300,10 @@ void ofApp::updateGridFbo()
         
         if( GridImages[i].isImageSelected == true  )
         {
-            ofSetColor( ofColor::green,100);
-            //ofNoFill();
-            
-            ofRect( i/gridSize * imageThumbWidth , i % gridSize * imageThumbHeight, imageThumbWidth, imageThumbHeight );
+            ofSetColor( ofColor::green,255);
+            ofNoFill();
+            ofSetLineWidth(5);
+            ofRect( i/gridSize * imageThumbWidth -2, i % gridSize * imageThumbHeight -2 , imageThumbWidth, imageThumbHeight );
             ofSetColor( ofColor::white );
             
         }
@@ -343,62 +344,63 @@ void ofApp::clearSelections()
 void ofApp::updateSOM ()
 {
     
-    //    int randomNumber = ofRandom(100);
-    //    double instance[3] = { exifDataInt1[randomNumber],exifDataInt2[randomNumber],exifDataInt3[randomNumber] };
-    //    som.updateMap(instance);
+        int randomNumber = ofRandom(GridImages.size());
+        double instance[4] = { GridImages[randomNumber].dAperture ,GridImages[randomNumber].dShutterSpeed , GridImages[randomNumber].dFocalLength , GridImages[randomNumber].dAperture  };
+    
+//  dMinAperture, dMinShutterSpeed, dMinFocalLength, dMinAperture
+        som.updateMap(instance);
     
     
     //in update map create quantized movements
-    
     //update FBO
     
     
-    //    for (int i = 0; i < 256; i++) {
-    //        for (int j = 0; j < 256; j++) {
-    //            double * c = som.getMapAt(i,j);
-    //            ofColor col(c[0], c[1], c[2]);
-    //            somImg.setColor(i, j, col);
-    //        }
-    //    }
-    //    somImg.update();
+//        for (int i = 0; i < 256; i++) {
+//            for (int j = 0; j < 256; j++) {
+//                double * c = som.getMapAt(i,j);
+//                ofColor col(c[0], c[1], c[2]);
+//                somImg.setColor(i, j, col);
+//            }
+//        }
+//        somImg.update();
     
     
+//    
+//        for (int i = 0; i < gridSize; i++) {
+//            for (int j = 0; j < gridSize; j++) {
+//                double * exifData = som.getMapAt(i,j);
+//                for ( int k = 0 ; k < numberOfTestImages ; k++ )
+//                    {
+//                    if( exifData[0] == exifDataInt1[k] && exifData[1] == exifDataInt2[k] && exifData[2] == exifDataInt3[k])
+//                    // create a new table i guess
+//    
+//                    }
+//                
+//                
+//            }
+//        }
     
-    //    for (int i = 0; i < gridSize; i++) {
-    //        for (int j = 0; j < gridSize; j++) {
-    //            double * exifData = som.getMapAt(i,j);
-    //            for ( int k = 0 ; k < numberOfTestImages ; k++ )
-    //                {
-    //                if( exifData[0] == exifDataInt1[k] && exifData[1] == exifDataInt2[k] && exifData[2] == exifDataInt3[k])
-    //                // create a new table i guess
-    //
-    //                }
-    //            
-    //            
-    //        }
-    //    }
+        fbo2.begin();
+        ofClear(255,255,255);
+        for (int i = 0; i < gridSize; i++) {
+            for (int j = 0; j < gridSize; j++) {
     
-    //    fbo2.begin();
-    //    ofClear(255,255,255);
-    //    for (int i = 0; i < gridSize; i++) {
-    //        for (int j = 0; j < gridSize; j++) {
-    //
-    //            double * exifData = som.getMapAt(i,j);
-    //            ofSetColor(ofColor::blue);
-    //
-    //            ofDrawBitmapString( ofToString( exifData[0] ), i * imageThumbWidth , j * imageThumbHeight + 20 );
-    //
-    //            ofDrawBitmapString(ofToString( exifData[1] )  , i * imageThumbWidth , j * imageThumbHeight + 40 );
-    //
-    //            ofDrawBitmapString(ofToString( exifData[2] ) , i * imageThumbWidth , j * imageThumbHeight + 60 );
-    //
-    //            ofSetColor(ofColor::white );
-    //
-    //            //imageThumbs[i * gridSize + j ].draw( i * imageThumbWidth , j * imageThumbHeight );
-    //            }
-    //
-    //        }
-    //    fbo2.end();
+                double * exifData = som.getMapAt(i,j);
+                ofSetColor(ofColor::blue);
+    
+                ofDrawBitmapString( ofToString( exifData[0] ), i * imageThumbWidth , j * imageThumbHeight + 20 );
+    
+                ofDrawBitmapString(ofToString( exifData[1] )  , i * imageThumbWidth , j * imageThumbHeight + 40 );
+    
+                ofDrawBitmapString(ofToString( exifData[2] ) , i * imageThumbWidth , j * imageThumbHeight + 60 );
+    
+                ofSetColor(ofColor::white );
+    
+                //imageThumbs[i * gridSize + j ].draw( i * imageThumbWidth , j * imageThumbHeight );
+                }
+    
+            }
+        fbo2.end();
 
     
     
@@ -407,16 +409,16 @@ void ofApp::updateSOM ()
 void ofApp::initializeSOM ()
 {
     //new SOM stuff
+    setExifExtreme();
     
-    //    double minInstance[3] = { minInArray( exifDataInt1 ), minInArray( exifDataInt2 ),minInArray( exifDataInt3 ) };
-    //    double maxInstance[3] = { maxInArray( exifDataInt1 ), maxInArray( exifDataInt1 ),maxInArray( exifDataInt1 ) };
-    //
-    //    som.setFeaturesRange(3, minInstance, maxInstance);
-    //    som.setInitialLearningRate(0.07);
-    //    som.setNumIterations(4000);
-    //    som.setMapSize(gridSize, gridSize);
-    //    som.setup();
+        double minInstance[4] = { dMinAperture, dMinShutterSpeed, dMinFocalLength, dMinAperture };
+        double maxInstance[4] = { dMaxAperture, dMaxShutterSpeed, dMaxFocalLength, dMaxAperture  };
     
+        som.setFeaturesRange(4, minInstance, maxInstance);
+        som.setInitialLearningRate(0.1);
+        som.setNumIterations(4000);
+        som.setMapSize(gridSize, gridSize);
+        som.setup();
     
 }
 
@@ -759,7 +761,7 @@ void ofApp::updatePlots()
          ofDrawBitmapString("Focal Length:  ", 0, 3 * heightDifference  -4);
         ofDrawBitmapString("Shutter Speed:  ", 0, 5 * heightDifference -4 );
         ofDrawBitmapString("Aperture :  ", 0, 7 * heightDifference -4  );
-        ofSetColor(ofColor::blueSteel , 70 );
+        ofSetColor(ofColor::blueSteel , 150 );
         
         ofRect( ( dISOList[i] - dMinISOSpeed )/ ( dMaxISOSpeed - dMinISOSpeed ) * plotWidth, heightDifference, dataCellWidth, dataCellHeight);
         
@@ -841,5 +843,76 @@ void ofApp::refreshFeed()
     
 }
 
+
+void ofApp::setExifExtreme()
+{
+    
+    for (int  i = 0  ; i < GridImages.size() ; i ++)
+    {
+        //min
+        
+        if ( GridImages[i].dFocalLength < dMinFocalLength)
+        {
+            GridImages[i].dFocalLength = dMinFocalLength;
+        }
+        
+        if ( GridImages[i].dISOSpeed < dMinISOSpeed)
+        {
+            GridImages[i].dISOSpeed = dMinISOSpeed;
+        }
+        
+        if ( GridImages[i].dShutterSpeed < dMinShutterSpeed)
+        {
+            GridImages[i].dShutterSpeed = dMinShutterSpeed;
+        }
+        
+        if ( GridImages[i].dAperture < dMinAperture)
+        {
+            GridImages[i].dAperture = dMinAperture;
+        }
+        
+        
+        
+        
+        //max
+        
+        if ( GridImages[i].dFocalLength > dMaxFocalLength)
+        {
+            GridImages[i].dFocalLength = dMaxFocalLength;
+        }
+        
+        if ( GridImages[i].dISOSpeed > dMaxISOSpeed)
+        {
+            GridImages[i].dISOSpeed = dMaxISOSpeed;
+        }
+        
+        if ( GridImages[i].dShutterSpeed > dMaxShutterSpeed)
+        {
+            GridImages[i].dShutterSpeed = dMaxShutterSpeed;
+        }
+        
+        if ( GridImages[i].dAperture > dMaxAperture)
+        {
+            GridImages[i].dAperture = dMaxAperture;
+        }
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+        
+    }
+    
+    
+}
 
 

@@ -4,6 +4,8 @@
 #include "ofxSelfOrganizingMap.h"
 #include "ofxExif.h"
 #include "ImageDataClass.h"
+#include "ofxThreadedImageLoader.h"
+
 
 
 // for a grid of 600 * 600 p , change accordingly
@@ -11,8 +13,8 @@
 const int numberOfTestImages = 144;
 
 
-const int imageThumbWidth = 80;
-const int imageThumbHeight = 80;
+const int imageThumbWidth = 75;
+const int imageThumbHeight = 75;
 
 
 //const int numberOfTestImages = 400;
@@ -54,35 +56,38 @@ class ofApp : public ofBaseApp{
         double minInArray(double passedArray[]);
         double maxInArray(double passedArray[]);
     
+    
+    
+    
+        
+    
+    
         void drawFullImage(int selectedImageNumber);
         void updateGridFbo ();
         void updateSOM ();
         void initializeSOM ();
-    
         void clearSelections();
-    
         void updateSelections( int selectedImageNumber );
-    
         void theConvergingFunction();
-    
         void theRemovingFunction();
-    
         void getNewImages();
         void injectNewPhotos();
-    
         bool checkIfImageValid ( ImageDataClass tempImage);
-    
         void drawCurrentStateParameters();
-    
         void updatePlots();
     
         void refreshFeed();
+    
+        void setExifExtreme();
+    
+    
     
     
     
     
         // SOM stuff
-//        ofxSelfOrganizingMap som;
+        ofxSelfOrganizingMap som;
+    
 //        ofImage somImg, sourceImg, sourceImgThumbs[5];
 //        string sourcePaths[5];
     
@@ -125,15 +130,16 @@ class ofApp : public ofBaseApp{
         string exifExtention = ".txt";
     
     
-        double dMinFocalLength;
-        double dMinISOSpeed;
-        double dMinShutterSpeed;
-        double dMinAperture;
+        double dMinFocalLength = 1000;
+        double dMinISOSpeed = 10000 ;
+        double dMinShutterSpeed = 100 ;
+        double dMinAperture = 100 ;
         
-        double dMaxFocalLength;
-        double dMaxISOSpeed;
-        double dMaxShutterSpeed;
-        double dMaxAperture;
+        double dMaxFocalLength = 0;
+        double dMaxISOSpeed = 0;
+        double dMaxShutterSpeed = 0;
+        double dMaxAperture = 0;
+    
         // make sure they are doubles
     
         int imageStack = numberOfTestImages;
@@ -144,18 +150,7 @@ class ofApp : public ofBaseApp{
     
         double plotWidth = 400;
     
-    
-    
-    
-
             
-    
-    
-    
-        
-        
-    
-    
     
 		
 };

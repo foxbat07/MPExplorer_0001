@@ -6,28 +6,44 @@
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>C7D9BFEB-1BA2-4E9D-9A8E-1EF1C1BF89F9</string>
+	<key>IDESourceControlProjectName</key>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>1ACD9576A61F2B707BD0FBE307531E445F127D99</key>
 		<string>https://github.com/genekogan/ofxSelfOrganizingMap.git</string>
+		<key>2CC3D377B3B85C3966F3C1283A76500EFF4E5D0F</key>
+		<string>https://github.com/mohithingorani/MPExplorer_0001.git</string>
 		<key>E886256A40B8C928A83BC1507FBEE8D8600B8797</key>
 		<string>https://github.com/patriciogonzalezvivo/ofxExif.git</string>
 	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>MPExplorer_001.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>1ACD9576A61F2B707BD0FBE307531E445F127D99</key>
-		<string>ofxSelfOrganizingMap/</string>
+		<string>../../../addons/ofxSelfOrganizingMap</string>
+		<key>2CC3D377B3B85C3966F3C1283A76500EFF4E5D0F</key>
+		<string>../..</string>
 		<key>E886256A40B8C928A83BC1507FBEE8D8600B8797</key>
-		<string>ofxExif/</string>
+		<string>../../../addons/ofxExif</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/genekogan/ofxSelfOrganizingMap.git</string>
+	<string>https://github.com/mohithingorani/MPExplorer_0001.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>1ACD9576A61F2B707BD0FBE307531E445F127D99</string>
+	<string>2CC3D377B3B85C3966F3C1283A76500EFF4E5D0F</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>2CC3D377B3B85C3966F3C1283A76500EFF4E5D0F</string>
+			<key>IDESourceControlWCCName</key>
+			<string>MPExplorer_001</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
